@@ -27,8 +27,17 @@ public class Player : MonoBehaviour
 
     private GameObject _laserPrefab;
 
+    [SerializeField]
+
+    private float _fireRate = 0.15f;
+
+    private float _nextFire = -1.0f;
+
+
     // Start is called before the first frame update
+
     void Start()
+
     {
         transform.position = new Vector3(0, 0, 0);
     }
@@ -37,14 +46,13 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        CalculatingMovement(); 
-        
+        CalculatingMovement();
+
         // if i hit the space key
         // spawn laser
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && Time.time > _nextFire)
         {
-            // Quaternion.identity = default rotation (0,0,0).
-            Instantiate(_laserPrefab, transform.position, Quaternion.identity);
+            FireLaser();
         }
     }
     void CalculatingMovement()
@@ -55,13 +63,13 @@ public class Player : MonoBehaviour
         float VerticalInput = Input.GetAxis("Vertical");
 
 
-        // Vector3.right = new Vector3(1, 0, 0)
-        transform.Translate(Vector3.right * horizontalInput *
-            _speed * Time.deltaTime);
+        // Vector3.right = new Vector3(1, 0, 0)S
 
         // Move the player vertically.
 
-        transform.Translate(Vector3.up * Time.deltaTime, Space.World);
+        transform.Translate(Vector3.up * VerticalInput * Time.deltaTime, Space.World);
+        transform.Translate(Vector3.right * horizontalInput * Time.deltaTime, Space.World);
+
 
         // if the player position on the y axis is > 0
         // y position = 0
@@ -71,13 +79,13 @@ public class Player : MonoBehaviour
         {
             transform.position = new Vector3(transform.position.x, 0, 0);
         }
-        
-         else if (transform.position.y < -4.5f)
-            {
+
+        else if (transform.position.y < -4.5f)
+        {
             transform.position
                 = new Vector3(transform.position.x, -4.5f, 0);
-        
-            }
+
+        }
         // if x position is > 11.5
         // X position = -11.5
         // else if Xposition < -11.5
@@ -94,5 +102,17 @@ public class Player : MonoBehaviour
 
     }
 
+    void FireLaser() {
+        _nextFire = Time.time + _fireRate;
 
-}
+        // calculate 0.8 units vertically from the player
+        Vector3 laserPos = transform.position + new Vector3(0, 0.8f, 0);
+
+
+        // Quaternion.identity = default rotation (0,0,0).
+        Instantiate(_laserPrefab, laserPos, Quaternion.identity);
+    }
+
+        
+    }
+

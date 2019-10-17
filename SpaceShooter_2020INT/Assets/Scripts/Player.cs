@@ -23,6 +23,10 @@ public class Player : MonoBehaviour
     //attribute - exposes the variable inside Unity
     private float _speed = 3.5f;
 
+    [SerializeField]
+
+    private GameObject _laserPrefab;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -32,6 +36,18 @@ public class Player : MonoBehaviour
 
     // Update is called once per frame
     void Update()
+    {
+        CalculatingMovement(); 
+        
+        // if i hit the space key
+        // spawn laser
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            // Quaternion.identity = default rotation (0,0,0).
+            Instantiate(_laserPrefab, transform.position, Quaternion.identity);
+        }
+    }
+    void CalculatingMovement()
     {
         // local variable - horizontalInput
         // read the keyboard input from the user
@@ -66,6 +82,17 @@ public class Player : MonoBehaviour
         // X position = -11.5
         // else if Xposition < -11.5
         // X position = 11.5
+        if (transform.position.x > 11.5f)
+        {
+            transform.position = new Vector3(-11.5f, transform.position.y, 0);
+
         }
+        else if (transform.position.x < -11.5f)
+        {
+            transform.position = new Vector3(11.5f, transform.position.y, 0);
+        }
+
     }
+
+
 }
